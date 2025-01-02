@@ -1,9 +1,9 @@
 #pragma once
-#include "EditorSettings.h"
-#include "ViewportSettings.h"
+#include "../EditorSettings.h"
+#include "../viewport/ViewportSettings.h"
 
 // Load fonts, ini settings, texture and initialise an imgui context.
-// It allows to keep data that have a longer lifetime than the editor or the widgets.
+// It allows for keeping data that have a longer lifetime than the editor or the widgets.
 class ResourcesLoader {
   public:
     ResourcesLoader();

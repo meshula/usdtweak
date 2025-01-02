@@ -458,7 +458,9 @@ GfCamera Viewport::GetViewportCamera() const {
 
 void Viewport::BeginHydraUI(int width, int height) {
     // Create a ImGui windows to render the gizmos in
+#ifdef HAVE_OPENGL
     ImGui_ImplOpenGL3_NewFrame();
+#endif
     ImGuiIO &io = ImGui::GetIO();
     io.DisplaySize = ImVec2((float)width, (float)height);
     ImGui::NewFrame();
@@ -554,7 +556,9 @@ void Viewport::Render() {
     }
     if (_imagingSettings.showGizmos) {
         ImGui::Render();
+#ifdef HAVE_OPENGL
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+#endif
     }
     _drawTarget->Unbind();
 }
