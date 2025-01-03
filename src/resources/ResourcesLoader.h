@@ -9,6 +9,8 @@ class ResourcesLoader {
     ResourcesLoader();
     ~ResourcesLoader();
 
+    static void ResetWindowPositions();
+
     // Return the settings that the resource loader has loaded when the application starter.
     // Those settings will also be saved when the application closes.
     // Note that he editor and the viewport might have their own copy of the settings.

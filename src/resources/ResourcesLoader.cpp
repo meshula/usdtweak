@@ -194,6 +194,10 @@ ResourcesLoader::ResourcesLoader() {
     ScaleUI(GetEditorSettings()._uiScale);
 }
 
+void ResourcesLoader ::ResetWindowPositions() {
+    ImGui::LoadIniSettingsFromMemory(imgui, 0);
+}
+
 int ResourcesLoader ::GetApplicationWidth() { return ResourcesLoader::GetEditorSettings()._mainWindowWidth; }
 int ResourcesLoader ::GetApplicationHeight() { return ResourcesLoader::GetEditorSettings()._mainWindowHeight; }
 
