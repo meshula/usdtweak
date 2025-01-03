@@ -11,7 +11,7 @@
 #include "IBMPlexMonoFree.h"
 #include "IBMPlexSansMediumFree.h"
 
-#define GUI_CONFIG_FILE "usdtweak_gui.ini"
+#define GUI_CONFIG_FILE "_gui.ini"
 
 #ifdef _WIN64
 #include <codecvt>
@@ -25,13 +25,13 @@ std::string GetConfigFilePath() {
     PWSTR localAppDataDir = nullptr;
     if (SUCCEEDED(SHGetKnownFolderPath(FOLDERID_LocalAppData, KF_FLAG_DEFAULT, nullptr, &localAppDataDir))) {
         std::wstringstream configFilePath;
-        configFilePath << localAppDataDir << L"\\" GUI_CONFIG_FILE;
+        configFilePath << localAppDataDir << L"\\" << ResourcesLoader::GetAppName() << GUI_CONFIG_FILE;
         CoTaskMemFree(localAppDataDir);
         std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>>
             converter; // TODO: this is deprecated in C++17, find another solution
         return converter.to_bytes(configFilePath.str());
     }
-    return GUI_CONFIG_FILE;
+    return ResourcesLoader::GetAppName() + GUI_CONFIG_FILE;
 }
 #elif defined(__unix__) || (defined(__APPLE__) && defined(__MACH__))
 
@@ -58,13 +58,13 @@ std::string GetConfigFilePath() {
         configPath += "/."; // hide the ini in the home dir
 #endif
     }
-    configPath += GUI_CONFIG_FILE;
+    configPath += ResourcesLoader::GetAppName() + GUI_CONFIG_FILE;
     return configPath;
 }
 
 #else // Not unix and not windows64
 
-std::string GetConfigFilePath() { return GUI_CONFIG_FILE; }
+std::string GetConfigFilePath() { return ResourcesLoader::GetAppName() + GUI_CONFIG_FILE; }
 
 #endif
 
@@ -140,6 +140,7 @@ static void UsdTweakDataWriteAll(ImGuiContext *ctx, ImGuiSettingsHandler *iniHan
 }
 
 bool ResourcesLoader::_resourcesLoaded = false;
+std::string ResourcesLoader::_app = std::string();
 std::string ResourcesLoader::_font = std::string();
 std::string ResourcesLoader::_fontMono = std::string();
 std::string ResourcesLoader::_glyphRange = std::string();
@@ -150,7 +151,7 @@ EditorSettings &ResourcesLoader::GetEditorSettings() { return _editorSettings; }
 ViewportSettings ResourcesLoader::_viewportSettings = ViewportSettings();
 ViewportSettings &ResourcesLoader::GetViewportSettings() { return _viewportSettings; }
 
-ResourcesLoader::ResourcesLoader() {
+ResourcesLoader::ResourcesLoader(const char* appName) {
     // There should be only one object of this class, we make sure the constructor is only called once
     if (_resourcesLoaded) {
         std::cerr << "Coding error, ResourcesLoader is called twice" << std::endl;
@@ -158,6 +159,8 @@ ResourcesLoader::ResourcesLoader() {
     } else {
         _resourcesLoaded = true;
     }
+
+    _app = appName;
 
     IMGUI_CHECKVERSION();
     ImGui::CreateContext(); // TODO: I am not sure this is a good idea to create an imgui context without windows, double check

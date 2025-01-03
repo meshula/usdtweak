@@ -6,7 +6,7 @@
 // It allows for keeping data that have a longer lifetime than the editor or the widgets.
 class ResourcesLoader {
   public:
-    ResourcesLoader();
+    ResourcesLoader(const char* appName);
     ~ResourcesLoader();
 
     static void ResetWindowPositions();
@@ -26,6 +26,8 @@ class ResourcesLoader {
     static std::string &GetGlyphRangeName() { return _glyphRange; };
     static const std::vector<std::string> &GetGlyphRangeNames();
 
+    static std::string &GetAppName() { return _app; }
+
     // This should not be called during a frame render.
     static void ScaleUI(float scaleValue);
 
@@ -35,6 +37,8 @@ class ResourcesLoader {
     // between editor and editor settings.
     static EditorSettings _editorSettings;
     static ViewportSettings _viewportSettings;
+
+    static std::string _app;
 
     static std::string _font;
     static std::string _fontMono;
