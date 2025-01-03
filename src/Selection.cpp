@@ -54,29 +54,40 @@ Selection::Selection() { _data = new SelectionData(); }
 
 Selection::~Selection() { delete _data; }
 
-template <> void Selection::Clear(const SdfLayerRefPtr &layer) {
-    if (!_data || !layer)
-        return;
-    _data->_sdfPrimSelectionDomain.clear();
+#define ImplementLayerClearSelection(LayerT)              \
+template <> void Selection::Clear(const LayerT &layer) {  \
+    if (!_data || !layer)                                 \
+        return;                                           \
+    _data->_sdfPrimSelectionDomain.clear();               \
+}
+ImplementLayerClearSelection(SdfLayerRefPtr)
+ImplementLayerClearSelection(TfWeakPtr<SdfLayer>)
+
+#define ImplementStageClearSelection(StageT)              \
+template <> void Selection::Clear(const StageT &stage) {  \
+    if (!_data || !stage)                                 \
+        return;                                           \
+    _data->_stageSelection.reset(new HdSelection());      \
+    _data->_stageSelection.mustRecomputeHash = true;      \
 }
 
-template <> void Selection::Clear(const UsdStageRefPtr &stage) {
-    if (!_data || !stage)
-        return;
-    _data->_stageSelection.reset(new HdSelection());
-    _data->_stageSelection.mustRecomputeHash = true;
-}
+ImplementStageClearSelection(UsdStageRefPtr)
+ImplementStageClearSelection(UsdStageWeakPtr)
 
 // Layer add a selection
-template <> void Selection::AddSelected(const SdfLayerRefPtr &layer, const SdfPath &selectedPath) {
-    if (!_data || !layer)
-        return;
-    if (selectedPath.IsPropertyPath()) {
-        _data->_sdfPropSelectionDomain.insert(layer->GetObjectAtPath(selectedPath));
-    } else {
-        _data->_sdfPrimSelectionDomain.insert(layer->GetObjectAtPath(selectedPath));
-    }
+#define ImplementLayerAddSelected(LayerT)                                                        \
+template <> void Selection::AddSelected(const LayerT &layer, const SdfPath &selectedPath) {      \
+    if (!_data || !layer)                                                                        \
+        return;                                                                                  \
+    if (selectedPath.IsPropertyPath()) {                                                         \
+        _data->_sdfPropSelectionDomain.insert(layer->GetObjectAtPath(selectedPath));             \
+    } else {                                                                                     \
+        _data->_sdfPrimSelectionDomain.insert(layer->GetObjectAtPath(selectedPath));             \
+    }                                                                                            \
 }
+
+ImplementLayerAddSelected(SdfLayerRefPtr)
+ImplementLayerAddSelected(TfWeakPtr<SdfLayer>)
 
 #define ImplementStageAddSelected(StageT)                                                                                        \
     template <> void Selection::AddSelected(const StageT &stage, const SdfPath &selectedPath) {                                  \

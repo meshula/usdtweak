@@ -78,7 +78,7 @@ class StageOutlinerDisplayOptions {
     bool _showPrototypes = true;
 };
 
-static void ExploreLayerTree(SdfLayerTreeHandle tree, PcpNodeRef node) {
+static void ExploreLayerTree(Selection &selectedPaths, SdfLayerTreeHandle tree, PcpNodeRef node) {
     if (!tree)
         return;
     auto obj = tree->GetLayer()->GetObjectAtPath(node.GetPath());
@@ -88,21 +88,25 @@ static void ExploreLayerTree(SdfLayerTreeHandle tree, PcpNodeRef node) {
         format += " ";
         format += obj->GetPath().GetString();
         if (ImGui::MenuItem(format.c_str())) {
+            /// @dp v
+            selectedPaths.Clear(tree->GetLayer());
+            selectedPaths.AddSelected(tree->GetLayer(), obj->GetPath());
+            /// @dp ^
             ExecuteAfterDraw<EditorSetSelection>(tree->GetLayer(), obj->GetPath());
         }
     }
     for (auto subTree : tree->GetChildTrees()) {
-        ExploreLayerTree(subTree, node);
+        ExploreLayerTree(selectedPaths, subTree, node);
     }
 }
 
-static void ExploreComposition(PcpNodeRef root) {
+static void ExploreComposition(Selection &selectedPaths, PcpNodeRef root) {
     auto tree = root.GetLayerStack()->GetLayerTree();
-    ExploreLayerTree(tree, root);
-    TF_FOR_ALL(childNode, root.GetChildrenRange()) { ExploreComposition(*childNode); }
+    ExploreLayerTree(selectedPaths, tree, root);
+    TF_FOR_ALL(childNode, root.GetChildrenRange()) { ExploreComposition(selectedPaths, *childNode); }
 }
 
-static void DrawUsdPrimEditMenuItems(const UsdPrim &prim) {
+static void DrawUsdPrimEditMenuItems(Selection &selectedPaths, const UsdPrim &prim) {
     if (ImGui::MenuItem("Toggle active")) {
         const bool active = !prim.IsActive();
         ExecuteAfterDraw(&UsdPrim::SetActive, prim, active);
@@ -121,7 +125,7 @@ static void DrawUsdPrimEditMenuItems(const UsdPrim &prim) {
         auto pcpIndex = prim.ComputeExpandedPrimIndex();
         if (pcpIndex.IsValid()) {
             auto rootNode = pcpIndex.GetRootNode();
-            ExploreComposition(rootNode);
+            ExploreComposition(selectedPaths, rootNode);
         }
         ImGui::EndMenu();
     }
@@ -249,7 +253,7 @@ static void DrawPrimTreeRow(const UsdPrim &prim, Selection &selectedPaths, Stage
             const ImGuiID pathHash = IdOf(GetHash(prim.GetPath()));
             //ImGui::AlignTextToFramePadding();
             unfolded = ImGui::TreeNodeBehavior(pathHash, flags, prim.GetName().GetText());
-            // TreeSelectionBehavior(selectedPaths, &prim);
+            //TreeSelectionBehavior(selectedPaths, &prim);
             if (ImGui::IsItemClicked() && !ImGui::IsItemToggledOpen()) {
                 // TODO selection, should go in commands, ultimately the selection is passed
                 // as const
@@ -260,6 +264,14 @@ static void DrawPrimTreeRow(const UsdPrim &prim, Selection &selectedPaths, Stage
                         selectedPaths.AddSelected(prim.GetStage(), prim.GetPath());
                     }
                 } else {
+                    /// @dp v
+                    /// this is needed since the editor isn't running the show if usdtweak isn't the driving application
+                    /// design: selectedPaths is passed in from editor, but the write is indirect here, writing to the
+                    /// editor, not the selection itself. So although ExecuteAfterDraw runs, my selection isn't owned by the
+                    /// the editor object, so that's mismatched.
+                    selectedPaths.Clear(prim.GetStage());
+                    selectedPaths.AddSelected(prim.GetStage(), prim.GetPath());
+                    /// @dp ^
                     ExecuteAfterDraw<EditorSetSelection>(prim.GetStage(), prim.GetPath());
                 }
             }
@@ -267,7 +279,7 @@ static void DrawPrimTreeRow(const UsdPrim &prim, Selection &selectedPaths, Stage
         {
             ScopedStyleColor popupColor(ImGuiCol_Text, ImVec4(ColorPrimDefault));
             if (ImGui::BeginPopupContextItem()) {
-                DrawUsdPrimEditMenuItems(prim);
+                DrawUsdPrimEditMenuItems(selectedPaths, prim);
                 ImGui::EndPopup();
             }
         }

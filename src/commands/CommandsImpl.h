@@ -1,5 +1,5 @@
 #pragma once
-#include <SdfCommandGroup.h>
+#include "SdfCommandGroup.h"
 #include <memory>
 #include <pxr/usd/usd/stage.h> // For BeginEdition
 #include <vector>
