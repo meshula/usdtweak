@@ -46,8 +46,8 @@ struct UsdAPIMaterialBind : public SdfLayerCommand {
         return false;
     }
 
-    UsdStageRefPtr _stage;
-    SdfLayerRefPtr _layer;
+    UsdStageWeakPtr _stage;
+    SdfLayerWeakPtr _layer;
     SdfPath _primPath;
     SdfPath _materialPath;
     TfToken _purpose;

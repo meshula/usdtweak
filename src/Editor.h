@@ -148,7 +148,7 @@ public:
     ///
     EditorSettings _settings;
 
-    UsdStageRefPtr _currentStage;
+    UsdStageWeakPtr _currentStage;
     Viewport _viewport1;
     Viewport _viewport2;
     Viewport _viewport3;

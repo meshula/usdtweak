@@ -38,7 +38,7 @@ struct SessionLoadModalDialog : public ModalDialog {
 
     const char *DialogId() const override { return "Load session"; }
 
-    UsdStageRefPtr _stage;
+    UsdStageWeakPtr _stage;
 };
 
 struct ContentBrowserOptions {

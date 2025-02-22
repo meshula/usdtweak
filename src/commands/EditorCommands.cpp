@@ -66,7 +66,7 @@ struct EditorSetSelection : public EditorCommand {
         }
         return false;
     }
-    UsdStageRefPtr _stageRefPtr;
+    UsdStageWeakPtr _stageRefPtr;
     SdfLayerRefPtr _layer;
     SdfPath _path;
 };

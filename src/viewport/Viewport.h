@@ -153,7 +153,7 @@ class Viewport final {
     GfVec2d _mousePosition;
     Grid _grid;
 
-    UsdStageRefPtr _stage;
+    UsdStageWeakPtr _stage;
 
     // Renderer
     GLuint _textureId = 0;

@@ -76,7 +76,7 @@ private:
     // A copy of the current stage camera used for editing
     GfCamera _stageCamera;
     // Keep track of the current stage to know when the stage has changed
-    UsdStageRefPtr _currentStage;
+    UsdStageWeakPtr _currentStage;
     
     // Common to all stages, the perpective and ortho cams
     struct OwnedCameras {
