@@ -1,4 +1,5 @@
 #pragma once
+#if 0
 ///
 /// OpenGL/Hydra Viewport and its ImGui Window drawing functions.
 /// This will eventually be split in 2 different files as the code
@@ -170,3 +171,4 @@ template <> inline Manipulator *Viewport::GetManipulator<MouseHoverManipulator>(
 template <> inline Manipulator *Viewport::GetManipulator<CameraManipulator>() { return &_cameraManipulator; }
 template <> inline Manipulator *Viewport::GetManipulator<SelectionManipulator>() { return &_selectionManipulator; }
 template <> inline Manipulator *Viewport::GetManipulator<ScaleManipulator>() { return &_scaleManipulator; }
+#endif

@@ -412,6 +412,7 @@ struct EditorExportFlattenedStage : public EditorCommand {
 };
 template void ExecuteAfterDraw<EditorExportFlattenedStage>(const std::string);
 
+#if 0
 struct ViewportsSelectMouseHoverManipulator : public EditorCommand {
     ViewportsSelectMouseHoverManipulator() {}
     bool DoIt() override {
@@ -449,6 +450,7 @@ struct ViewportsSelectScaleManipulator : public EditorCommand {
     }
 };
 template void ExecuteAfterDraw<ViewportsSelectScaleManipulator>();
+#endif
 
 // We use a command here simply because they run after the drawing
 struct EditorScaleUI : public EditorCommand {

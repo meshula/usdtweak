@@ -81,14 +81,14 @@ public:
     // GLFW callbacks
     void InstallCallbacks(GLFWwindow *window);
     void RemoveCallbacks(GLFWwindow *window);
-
+#if 0
     /// The main viewport
     Viewport &GetViewport();
     void SelectMouseHoverManipulator();
     void SelectPositionManipulator();
     void SelectRotationManipulator();
     void SelectScaleManipulator();
-
+#endif
     /// Playback controls
     void StartPlayback();
     void StopPlayback();
@@ -149,11 +149,12 @@ public:
     EditorSettings _settings;
 
     UsdStageRefPtr _currentStage;
+#if 0
     Viewport _viewport1;
     Viewport _viewport2;
     Viewport _viewport3;
     Viewport _viewport4;
-
+#endif
     /// Selection for stages and layers
     Selection _selection;
 

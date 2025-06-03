@@ -1,3 +1,4 @@
+#if 0
 #include <iostream>
 
 #include <pxr/imaging/garch/glApi.h>
@@ -637,3 +638,4 @@ bool Viewport::TestIntersection(GfVec2d clickedPoint, SdfPath &outHitPrimPath, S
             GetCurrentStage()->GetPseudoRoot(), _imagingSettings, &outHitPoint, &outHitNormal,
             &outHitPrimPath, &outHitInstancerPath, &outHitInstanceIndex));
 }
+#endif

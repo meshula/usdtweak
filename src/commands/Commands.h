@@ -66,10 +66,12 @@ struct LayerUnmute;
 struct LayerTextEdit;
 struct LayerCreateOversFromPath;
 
+#if 0
 struct ViewportsSelectMouseHoverManipulator;
 struct ViewportsSelectPositionManipulator;
 struct ViewportsSelectRotationManipulator;
 struct ViewportsSelectScaleManipulator;
+#endif
 
 struct UndoCommand;
 struct RedoCommand;
